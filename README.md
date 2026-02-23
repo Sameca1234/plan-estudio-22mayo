@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plan Estratégico de Estudio - Objetivo 22 de Mayo</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+    <!-- Placeholder Comments -->
+    <!-- Chosen Palette: Warm Neutrals with Professional Slate/Stone. 
+         Main Background: Stone-50.
+         Primary Actions: Stone-800.
+         Success states: Emerald-500. -->
+
+    <!-- Application Structure Plan: 
+         - PERSISTENCE LAYER: Added localStorage to save 'completedTasks' and 'notes' so the user doesn't lose data.
+         - UPDATED THURSDAY: Fixed block at 19:30-22:00 for Programming Exercises.
+         - MOBILE OPTIMIZATION: Refined padding and sizes for better viewing on phones/watches. -->
+
+    <!-- Visualization & Content Choices:
+         - Roadmap: 13-week detailed view with checkboxes that update the global progress bar.
+         - Dashboard: Real-time update of study load (20.5h).
+         
+         CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #fafaf9; /* stone-50 */
+            color: #292524; /* stone-800 */
+        }
+        
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 400px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 250px;
+        }
+
+        .card-shadow {
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+        }
+
+        .progress-transition {
+            transition: width 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #f5f5f4; }
+        ::-webkit-scrollbar-thumb { background: #d6d3d1; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #a8a29e; }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col pb-12">
+
+    <!-- Header -->
+    <header class="bg-white border-b border-stone-200 sticky top-0 z-50 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 py-3 flex flex-col sm:flex-row justify-between items-center gap-4">
+            <div class="flex items-center gap-3">
+                <span class="text-2xl">🎓</span>
+                <div>
+                    <h1 class="text-lg font-bold text-stone-800 leading-none">Estrategia 22 Mayo</h1>
+                    <p class="text-xs text-stone-500 font-medium mt-1 uppercase tracking-tighter" id="countdown-text">Cargando meta...</p>
+                </div>
+            </div>
+            
+            <div class="w-full sm:w-64">
+                <div class="flex justify-between items-end mb-1">
+                    <span class="text-[10px] font-bold text-stone-400 uppercase tracking-widest">Progreso Total</span>
+                    <span class="text-sm font-black text-stone-700" id="progress-percent">0%</span>
+                </div>
+                <div class="w-full bg-stone-100 rounded-full h-2.5 overflow-hidden border border-stone-200">
+                    <div id="progress-bar" class="bg-emerald-500 h-full progress-transition w-0 shadow-[0_0_10px_rgba(16,185,129,0.3)]"></div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex-grow p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto w-full space-y-6">
+
+        <!-- Grid Principal -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+            
+            <!-- Izquierda: Horario (8 cols) -->
+            <div class="lg:col-span-8 space-y-6">
+                <div class="bg-white p-6 rounded-2xl card-shadow border border-stone-100">
+                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
+                        <h3 class="text-xl font-bold flex items-center gap-2">
+                            <span>🗓️</span> Horario Semanal
+                        </h3>
+                        <div class="flex flex-wrap gap-1 bg-stone-50 p-1 rounded-xl border border-stone-100" id="day-buttons"></div>
+                    </div>
+
+                    <div id="day-view" class="bg-stone-50 rounded-2xl p-6 border border-stone-200 min-h-[350px] transition-all duration-300">
+                        <!-- Inyectado por JS -->
+                    </div>
+                </div>
+
+                <!-- Tips y Metodología -->
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    <div class="p-4 bg-white rounded-2xl border border-stone-100 card-shadow">
+                        <p class="text-[10px] font-black text-orange-500 uppercase mb-2">Apple Watch</p>
+                        <p class="text-xs text-stone-600 leading-relaxed">Configura el modo <strong>Enfoque</strong> de 07:30 a 08:30. Vital para empezar con ventaja.</p>
+                    </div>
+                    <div class="p-4 bg-white rounded-2xl border border-stone-100 card-shadow">
+                        <p class="text-[10px] font-black text-sky-500 uppercase mb-2">Pomodoro</p>
+                        <p class="text-xs text-stone-600 leading-relaxed">Bloques de 50' estudio / 10' descanso. No te saltes el descanso, estira las piernas.</p>
+                    </div>
+                    <div class="p-4 bg-white rounded-2xl border border-stone-100 card-shadow">
+                        <p class="text-[10px] font-black text-emerald-500 uppercase mb-2">Fines de Semana</p>
+                        <p class="text-xs text-stone-600 leading-relaxed">Máximo esfuerzo hasta las 17:00. Después, <strong>desconexión total</strong> para rendir el lunes.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Derecha: Estadísticas y Notas (4 cols) -->
+            <div class="lg:col-span-4 space-y-6">
+                
+                <!-- Carga Horaria -->
+                <div class="bg-white p-6 rounded-2xl card-shadow border border-stone-100 text-center">
+                    <h3 class="text-xs font-bold text-stone-400 uppercase tracking-widest mb-6 text-left">Carga Horaria (20.5h Total)</h3>
+                    <div class="chart-container">
+                        <canvas id="hoursChart"></canvas>
+                    </div>
+                    <div class="mt-6 flex flex-wrap gap-2 justify-center">
+                        <span class="px-2 py-1 bg-blue-50 text-blue-700 text-[10px] font-bold rounded-lg border border-blue-100">PROG: 7.5h</span>
+                        <span class="px-2 py-1 bg-emerald-50 text-emerald-700 text-[10px] font-bold rounded-lg border border-emerald-100">BD: 5h</span>
+                        <span class="px-2 py-1 bg-stone-100 text-stone-500 text-[10px] font-bold rounded-lg">RESTO: 8h</span>
+                    </div>
+                </div>
+
+                <!-- Bloc de Notas Persistente -->
+                <div class="bg-stone-900 text-stone-100 p-6 rounded-2xl shadow-xl space-y-4">
+                    <h3 class="text-md font-bold flex items-center gap-2">
+                        <span>📝</span> Bloc de Notas
+                    </h3>
+                    <textarea 
+                        id="user-notes"
+                        oninput="saveNotes()"
+                        class="w-full bg-stone-800 border border-stone-700 rounded-xl p-4 text-sm text-stone-300 focus:outline-none focus:ring-2 focus:ring-emerald-500 min-h-[180px] placeholder-stone-600 resize-none"
+                        placeholder="Ej: Dudas de SQL, fecha del examen de Sistemas..."></textarea>
+                    <p class="text-[9px] text-stone-500 uppercase text-right tracking-widest">Cambios guardados localmente</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Roadmap -->
+        <section class="bg-white p-6 sm:p-8 rounded-2xl card-shadow border border-stone-100">
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
+                <div>
+                    <h3 class="text-xl font-bold">🚀 Hoja de Ruta: Checklist de Semanas</h3>
+                    <p class="text-stone-500 text-sm">Organización por fases hasta el 22 de Mayo.</p>
+                </div>
+                <div class="px-4 py-2 bg-stone-50 rounded-full border border-stone-200 text-xs font-black text-stone-600" id="task-label">
+                    0 / 13 COMPLETADAS
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8" id="roadmap-container">
+                <!-- Inyectado por JS -->
+            </div>
+        </section>
+
+    </main>
+
+    <script>
+        // --- DATA ---
+        const scheduleData = {
+            "Lunes": { icon: "👔", focus: "Sistemas & Uni", color: "bg-amber-50 border-amber-200", blocks: [
+                { time: "07:30 - 08:30", sub: "Sistemas Informáticos", type: "study" },
+                { time: "09:00 - 14:00", sub: "Trabajo (Top Candy)", type: "work" },
+                { time: "14:00 - 15:00", sub: "Gimnasio", type: "gym" },
+                { time: "16:00 - 19:00", sub: "Trabajo (Top Candy)", type: "work" },
+                { time: "19:30 - 20:30", sub: "Clase Uni", type: "uni" }
+            ]},
+            "Martes": { icon: "💻", focus: "Lenguaje de Marcas", color: "bg-rose-50 border-rose-200", blocks: [
+                { time: "07:30 - 08:30", sub: "Lenguaje de Marcas", type: "study" },
+                { time: "09:00 - 14:00", sub: "Trabajo (Top Candy)", type: "work" },
+                { time: "14:00 - 15:00", sub: "Lenguaje de Marcas (Práctica)", type: "study" },
+                { time: "16:00 - 19:00", sub: "Trabajo (Top Candy)", type: "work" },
+                { time: "19:30 - 21:30", sub: "Clase Uni", type: "uni" }
+            ]},
+            "Miércoles": { icon: "🏋️", focus: "Sistemas & Uni", color: "bg-amber-50 border-amber-200", blocks: [
+                { time: "07:30 - 08:30", sub: "Sistemas Informáticos", type: "study" },
+                { time: "09:00 - 14:00", sub: "Trabajo (Top Candy)", type: "work" },
+                { time: "14:00 - 15:00", sub: "Gimnasio", type: "gym" },
+                { time: "16:00 - 19:00", sub: "Trabajo (Top Candy)", type: "work" },
+                { time: "19:30 - 21:30", sub: "Clase Uni", type: "uni" }
+            ]},
+            "Jueves": { icon: "⚙️", focus: "Entornos & Código", color: "bg-violet-50 border-violet-200", blocks: [
+                { time: "07:30 - 08:30", sub: "Entornos de Desarrollo", type: "study" },
+                { time: "09:00 - 14:00", sub: "Trabajo (Top Candy)", type: "work" },
+                { time: "14:00 - 15:00", sub: "Entornos de Desarrollo", type: "study" },
+                { time: "16:00 - 19:00", sub: "Trabajo (Top Candy)", type: "work" },
+                { time: "19:30 - 22:00", sub: "Ejercicios Programación", type: "study-heavy" }
+            ]},
+            "Viernes": { icon: "🧠", focus: "Fundamentos", color: "bg-indigo-50 border-indigo-200", blocks: [
+                { time: "07:30 - 08:30", sub: "Fundamentos Prog.", type: "study" },
+                { time: "09:00 - 14:00", sub: "Trabajo (Top Candy)", type: "work" },
+                { time: "14:00 - 15:00", sub: "Gimnasio", type: "gym" },
+                { time: "16:00 - 19:00", sub: "Trabajo (Top Candy)", type: "work" },
+                { time: "19:30 - 20:30", sub: "Fundamentos (Repaso Semanal)", type: "study" }
+            ]},
+            "Sábado": { icon: "☕", focus: "PROG (Intensivo)", color: "bg-blue-50 border-blue-200", blocks: [
+                { time: "10:00 - 14:00", sub: "Programación (Sesión 1)", type: "study-heavy" },
+                { time: "14:00 - 16:00", sub: "Descanso / Comida", type: "rest" },
+                { time: "16:00 - 17:00", sub: "Programación (Sesión 2)", type: "study-heavy" }
+            ]},
+            "Domingo": { icon: "🗄️", focus: "BD (Intensivo)", color: "bg-emerald-50 border-emerald-200", blocks: [
+                { time: "10:00 - 14:00", sub: "Bases de Datos (Sesión 1)", type: "study-heavy" },
+                { time: "14:00 - 16:00", sub: "Descanso / Comida", type: "rest" },
+                { time: "16:00 - 17:00", sub: "Bases de Datos (Sesión 2)", type: "study-heavy" }
+            ]}
+        };
+
+        const roadmap = [
+            { phase: "Fase 1: Asimilación", weeks: ["W1: Mapas Mentales", "W2: Condicionales/ER", "W3: Bucles/Tablas", "W4: HTML/Sistemas", "W5: Funciones"] },
+            { phase: "Fase 2: Profundo", weeks: ["W6: POO/SELECT", "W7: Objetos/JOINs", "W8: XML/Usuarios", "W9: Git/Groups", "W10: ArrayList/Subs"] },
+            { phase: "Fase 3: Éxito", weeks: ["W11: Puntos Débiles", "W12: Simulacros", "W13: 22 May Examen"] }
+        ];
+
+        // --- STATE & PERSISTENCE ---
+        let completedTasks = JSON.parse(localStorage.getItem('study_completed_tasks')) || [];
+
+        function init() {
+            renderDayButtons();
+            renderRoadmap();
+            renderChart();
+            loadNotes();
+            updateGlobalProgress();
+            startCountdown();
+            selectDay("Lunes");
+        }
+
+        function renderDayButtons() {
+            const container = document.getElementById('day-buttons');
+            Object.keys(scheduleData).forEach(day => {
+                const btn = document.createElement('button');
+                btn.className = `px-3 py-1.5 rounded-lg text-xs font-bold transition-all border border-transparent text-stone-400 hover:text-stone-800`;
+                btn.innerText = day.substring(0,3).toUpperCase();
+                btn.id = `btn-${day}`;
+                btn.onclick = () => selectDay(day);
+                container.appendChild(btn);
+            });
+        }
+
+        function selectDay(day) {
+            document.querySelectorAll('#day-buttons button').forEach(b => b.classList.remove('bg-white', 'text-stone-800', 'shadow-sm', 'border-stone-200'));
+            const btn = document.getElementById(`btn-${day}`);
+            btn.classList.add('bg-white', 'text-stone-800', 'shadow-sm', 'border-stone-200');
+
+            const data = scheduleData[day];
+            const view = document.getElementById('day-view');
+            
+            let html = `
+                <div class="flex items-center gap-4 mb-8">
+                    <span class="text-4xl p-3 bg-white rounded-2xl shadow-sm border border-stone-100">${data.icon}</span>
+                    <div>
+                        <h4 class="text-2xl font-bold text-stone-800">${day}</h4>
+                        <p class="text-xs font-black text-stone-400 uppercase tracking-widest">${data.focus}</p>
+                    </div>
+                </div>
+                <div class="space-y-3">
+            `;
+
+            data.blocks.forEach(block => {
+                let style = "bg-white border-stone-100 text-stone-600";
+                if(block.type === 'study-heavy') style = "bg-blue-600 text-white font-bold border-blue-700 shadow-md";
+                if(block.type === 'study') style = "bg-white border-blue-200 text-blue-900 font-semibold";
+                if(block.type === 'work') style = "bg-transparent border-stone-200 opacity-40 text-stone-400";
+                
+                html += `
+                    <div class="flex justify-between items-center p-4 rounded-xl border ${style} text-sm transition-transform hover:scale-[1.01]">
+                        <span class="font-mono text-xs opacity-80">${block.time}</span>
+                        <span class="tracking-tight">${block.sub}</span>
+                    </div>
+                `;
+            });
+
+            html += `</div>`;
+            view.innerHTML = html;
+            view.className = `rounded-2xl p-6 border transition-all duration-300 ${data.color}`;
+        }
+
+        function renderRoadmap() {
+            const container = document.getElementById('roadmap-container');
+            container.innerHTML = "";
+            roadmap.forEach((phase, pIdx) => {
+                let html = `<div class="space-y-4"><h4 class="text-[10px] font-black text-stone-400 uppercase tracking-widest">${phase.phase}</h4><div class="space-y-2">`;
+                phase.weeks.forEach((week, wIdx) => {
+                    const id = `task-${pIdx}-${wIdx}`;
+                    const isChecked = completedTasks.includes(id);
+                    html += `
+                        <label class="flex items-center gap-3 p-4 bg-stone-50 rounded-xl border border-stone-200 cursor-pointer hover:bg-white transition-all group">
+                            <input type="checkbox" onchange="toggleTask('${id}')" ${isChecked ? 'checked' : ''} class="w-5 h-5 rounded border-stone-300 text-emerald-500 focus:ring-emerald-500">
+                            <span class="text-xs font-bold text-stone-600 group-hover:text-stone-900 ${isChecked ? 'line-through opacity-40' : ''}">${week}</span>
+                        </label>
+                    `;
+                });
+                html += `</div></div>`;
+                container.innerHTML += html;
+            });
+        }
+
+        function toggleTask(id) {
+            if(completedTasks.includes(id)) {
+                completedTasks = completedTasks.filter(t => t !== id);
+            } else {
+                completedTasks.push(id);
+            }
+            localStorage.setItem('study_completed_tasks', JSON.stringify(completedTasks));
+            renderRoadmap();
+            updateGlobalProgress();
+        }
+
+        function updateGlobalProgress() {
+            const total = roadmap.reduce((acc, p) => acc + p.weeks.length, 0);
+            const percent = Math.round((completedTasks.length / total) * 100);
+            document.getElementById('progress-bar').style.width = `${percent}%`;
+            document.getElementById('progress-percent').innerText = `${percent}%`;
+            document.getElementById('task-label').innerText = `${completedTasks.length} / ${total} COMPLETADAS`;
+        }
+
+        function loadNotes() {
+            document.getElementById('user-notes').value = localStorage.getItem('study_user_notes') || "";
+        }
+
+        function saveNotes() {
+            const val = document.getElementById('user-notes').value;
+            localStorage.setItem('study_user_notes', val);
+        }
+
+        function startCountdown() {
+            const target = new Date('2026-05-22T09:00:00');
+            const el = document.getElementById('countdown-text');
+            const update = () => {
+                const diff = target - new Date();
+                const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+                el.innerText = `Faltan ${days} días para el examen`;
+            };
+            update();
+            setInterval(update, 60000);
+        }
+
+        function renderChart() {
+            const ctx = document.getElementById('hoursChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['PROG (7.5h)', 'BD (5h)', 'RESTO (8h)'],
+                    datasets: [{
+                        data: [7.5, 5, 8],
+                        backgroundColor: ['#2563eb', '#10b981', '#e7e5e4'],
+                        borderWidth: 0,
+                        hoverOffset: 10
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    cutout: '80%',
+                    plugins: { legend: { display: false } }
+                }
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>
